@@ -1,9 +1,9 @@
 (() => {
-  if (window.dark) return;
-  window.dark = true;
-  const style = document.createElement("style");
-  style.id = "dark";
-  style.textContent = `
+	if (window.dark) return;
+	window.dark = true;
+	const style = document.createElement('style');
+	style.id = 'dark';
+	style.textContent = `
 	.v-application .green:not(button) {
 		background-color: #212121 !important;
 		border-color: #212121 !important;
@@ -63,6 +63,6 @@
 		filter: invert(1);
 	}
 	`;
-  document.head.appendChild(style);
-  document.getElementById("app").__vue__.$vuetify.theme.isDark = true;
+	document.head.appendChild(style);
+	document.getElementById('app').__vue__.$vuetify.theme.isDark = true;
 })();

@@ -1,5 +1,5 @@
 (() => {
-  if (!window.star) return;
-  window.star = false;
-  window.unwatchStar();
+	if (!window.star) return;
+	window.star = false;
+	window.unwatchStar();
 })();
