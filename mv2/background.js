@@ -1,16 +1,3 @@
-function inject() {
-  if (window.injected) return;
-  window.injected = true;
-  chrome.runtime.onMessage.addListener((message) => {
-    const script = document.createElement("script");
-    script.src = chrome.runtime.getURL(
-      `utils/${message.val}/${message.opt}.js`
-    );
-    document.body.appendChild(script);
-    script.remove();
-  });
-}
-
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (
     changeInfo.status !== "complete" ||
@@ -21,20 +8,20 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     { status: "complete", url: "*://winbooks.onrender.com/*" },
     (result) => {
       result.forEach((e) => {
-        chrome.action.setPopup({ tabId: e.id, popup: "popups/enabled.html" });
-        chrome.action.setIcon({
+        chrome.browserAction.setPopup({
+          tabId: e.id,
+          popup: "popups/enabled.html",
+        });
+        chrome.browserAction.setIcon({
           tabId: e.id,
           path: { 48: "icons/icon48.png" },
         });
-        chrome.scripting.executeScript(
-          { target: { tabId: e.id }, function: inject },
-          () => {
-            chrome.storage.local.get(null, (items) => {
-              for (const k in items)
-                chrome.tabs.sendMessage(e.id, { opt: k, val: items[k] });
-            });
-          }
-        );
+        chrome.tabs.executeScript(e.id, { file: "inject.js" }, () => {
+          chrome.storage.local.get(null, (items) => {
+            for (const k in items)
+              chrome.tabs.sendMessage(e.id, { opt: k, val: items[k] });
+          });
+        });
       });
     }
   );
